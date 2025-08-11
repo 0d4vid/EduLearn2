@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Dashboard - EduLearn
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-5">Welcome back, {{ user.username }}!</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- My Courses Section -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-2xl font-bold mb-4">My Courses</h2>
+                <ul>
+                    {% for enrollment in enrolled_courses %}
+                        <li class="py-2 border-b">
+                            <a href="{% url 'courses:course_detail' enrollment.course.pk %}" class="text-blue-600 hover:underline">
+                                {{ enrollment.course.title }}
+                            </a>
+                        </li>
+                    {% empty %}
+                        <li>You are not enrolled in any courses yet. <a href="{% url 'courses:course_list' %}" class="text-blue-600 hover:underline">Browse courses</a>.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- My Progress Section -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-2xl font-bold mb-4">My Progress</h2>
+                {% if average_score is not None %}
+                    <p class="text-lg">Average Quiz Score: <span class="font-bold">{{ average_score|floatformat:2 }}%</span></p>
+                {% else %}
+                    <p>No quiz attempts yet.</p>
+                {% endif %}
+
+                <h3 class="text-xl font-bold mt-6 mb-3">Recent Attempts</h3>
+                <ul>
+                    {% for attempt in quiz_attempts|slice:":5" %}
+                        <li class="py-2 border-b">
+                            {{ attempt.quiz.title }}: <span class="font-semibold">{{ attempt.score|floatformat:2 }}%</span>
+                            <span class="text-sm text-gray-500">on {{ attempt.completed_at|date:"M d, Y" }}</span>
+                        </li>
+                    {% empty %}
+                        <li>No recent attempts.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

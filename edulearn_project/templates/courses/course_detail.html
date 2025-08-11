@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ course.title }} - EduLearn
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-10">
+        <div class="bg-white shadow-md rounded-lg p-8">
+            <h1 class="text-4xl font-bold mb-4">{{ course.title }}</h1>
+            <p class="text-gray-600 mb-2">Taught by: {{ course.instructor.username }}</p>
+            <p class="text-gray-600 mb-6">Category: {{ course.category.name }}</p>
+
+            <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="w-full h-96 object-cover rounded-lg mb-6">
+
+            <div class="prose max-w-none mb-6">
+                {{ course.description|linebreaks }}
+            </div>
+
+            {% if user.is_authenticated %}
+                {% if is_enrolled %}
+                    <a href="#" class="bg-green-500 text-white font-bold py-2 px-4 rounded">
+                        Go to Course
+                    </a>
+                {% else %}
+                    <form action="{% url 'courses:enroll' course.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Enroll Now
+                        </button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Log in to Enroll
+                </a>
+            {% endif %}
+
+            <hr class="my-8">
+
+            <h2 class="text-3xl font-bold mb-4">Lessons</h2>
+            <ul>
+                {% for lesson in course.lessons.all %}
+                    <li class="py-2 border-b">
+                        <a href="#" class="text-blue-600 hover:underline">
+                            Lesson {{ lesson.lesson_number }}: {{ lesson.title }}
+                        </a>
+                    </li>
+                {% empty %}
+                    <li>No lessons yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}

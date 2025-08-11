@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Courses - EduLearn
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-bold mb-5">Our Courses</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for course in courses %}
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h2 class="text-xl font-bold mb-2">{{ course.title }}</h2>
+                        <p class="text-gray-700 mb-4">{{ course.description|truncatewords:20 }}</p>
+                        <a href="{% url 'courses:course_detail' course.pk %}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            View Course
+                        </a>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No courses available yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

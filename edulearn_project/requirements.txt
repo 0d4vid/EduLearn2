@@ -1,0 +1,5 @@
+django==4.2.23
+Pillow==11.3.0
+gunicorn==22.0.0
+sqlparse==0.5.3
+asgiref==3.9.1
